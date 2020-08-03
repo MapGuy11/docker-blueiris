@@ -1,46 +1,60 @@
 // writes helpers require for vnc.html (they should output app.js)
-var fs = require('fs');
-var fse = require('fs-extra');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
+
+// util.promisify requires Node.js 8.x, so we have our own
+function promisify(original) {
+    return function promiseWrap() {
+        const args = Array.prototype.slice.call(arguments);
+        return new Promise((resolve, reject) => {
+            original.apply(this, args.concat((err, value) => {
+                if (err) return reject(err);
+                resolve(value);
+            }));
+        });
+    };
+}
+
+const writeFile = promisify(fs.writeFile);
 
 module.exports = {
     'amd': {
-        appWriter: (base_out_path, out_path) => {
+        appWriter: (baseOutPath, scriptBasePath, outPath) => {
             // setup for requirejs
-            fs.writeFile(out_path, 'requirejs(["app/ui"], function (ui) {});', (err) => { if (err) throw err; });
-            console.log(`Please place RequireJS in ${path.join(base_out_path, 'require.js')}`);
-            return `<script src="require.js" data-main="${path.relative(base_out_path, out_path)}"></script>`;
+            const uiPath = path.relative(baseOutPath,
+                                         path.join(scriptBasePath, 'app', 'ui'));
+            return writeFile(outPath, `requirejs(["${uiPath}"], function (ui) {});`)
+                .then(() => {
+                    console.log(`Please place RequireJS in ${path.join(scriptBasePath, 'require.js')}`);
+                    const requirePath = path.relative(baseOutPath,
+                                                      path.join(scriptBasePath, 'require.js'));
+                    return [ requirePath ];
+                });
         },
-        noCopyOverride: () => {},
     },
     'commonjs': {
-        optionsOverride: (opts) => {   
-            // CommonJS supports properly shifting the default export to work as normal
-            opts.plugins.unshift("add-module-exports");
+        appWriter: (baseOutPath, scriptBasePath, outPath) => {
+            const browserify = require('browserify');
+            const b = browserify(path.join(scriptBasePath, 'app/ui.js'), {});
+            return promisify(b.bundle).call(b)
+                .then(buf => writeFile(outPath, buf))
+                .then(() => []);
         },
-        appWriter: (base_out_path, out_path) => {
-            var browserify = require('browserify');
-            var b = browserify(path.join(base_out_path, 'app/ui.js'), {});
-            b.bundle().pipe(fs.createWriteStream(out_path));
-            return `<script src="${path.relative(base_out_path, out_path)}"></script>`;
-        },
-        noCopyOverride: () => {},
+        removeModules: true,
     },
     'systemjs': {
-        appWriter: (base_out_path, out_path) => {
-            fs.writeFile(out_path, 'SystemJS.import("./app/ui.js");', (err) => { if (err) throw err; });
-            console.log(`Please place SystemJS in ${path.join(base_out_path, 'system-production.js')}`);
-            return `<script src="vendor/promise.js"></script>
-<script src="system-production.js"></script>\n<script src="${path.relative(base_out_path, out_path)}"></script>`;
-        },
-        noCopyOverride: (paths, no_copy_files) => {
-            no_copy_files.delete(path.join(paths.vendor, 'promise.js'));
+        appWriter: (baseOutPath, scriptBasePath, outPath) => {
+            const uiPath = path.relative(baseOutPath,
+                                         path.join(scriptBasePath, 'app', 'ui.js'));
+            return writeFile(outPath, `SystemJS.import("${uiPath}");`)
+                .then(() => {
+                    console.log(`Please place SystemJS in ${path.join(scriptBasePath, 'system-production.js')}`);
+                    const systemjsPath = path.relative(baseOutPath,
+                                                       path.join(scriptBasePath, 'system-production.js'));
+                    return [ systemjsPath ];
+                });
         },
     },
     'umd': {
-        optionsOverride: (opts) => {   
-            // umd supports properly shifting the default export to work as normal
-            opts.plugins.unshift("add-module-exports");
-        },
     },
-}
+};
