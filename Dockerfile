@@ -24,11 +24,11 @@ ENV DISPLAY :0
 # Install wine
 RUN \
  dpkg --add-architecture i386 && \
- wget -nc https://dl.winehq.org/wine-builds/Release.key && \
- apt-key add Release.key && \
- apt-add-repository https://dl.winehq.org/wine-builds/ubuntu/ && \
+ wget -nc https://dl.winehq.org/wine-builds/winehq.key && \
+ apt-key add - && \
+ sudo add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ && \
  apt-get update && \
- apt-get -y install --allow-unauthenticated --install-recommends winehq-devel mono-complete wine-gecko
+ apt-get -y install --allow-unauthenticated --install-recommends winehq-stable mono-complete wine-gecko
 #Update One More Time
 RUN apt-get update
 RUN apt-get upgrade -y
