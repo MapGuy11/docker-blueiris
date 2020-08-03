@@ -15,7 +15,7 @@ ENV LANGUAGE en_US.UTF-8
  usermod -d /config nobody && \
  chown -R nobody:users /home
 
-RUN apt-get update &&  apt-get -y install xvfb x11vnc xdotool wget supervisor cabextract websockify net-tools
+RUN apt-get update &&  apt-get -y install xvfb x11vnc xdotool wget supervisor cabextract websockify net-tools gnupg
 
 ENV WINEPREFIX /root/prefix32
 ENV WINEARCH win32
@@ -28,9 +28,10 @@ RUN \
  apt-key add Release.key && \
  apt-add-repository https://dl.winehq.org/wine-builds/ubuntu/ && \
  apt-get update && \
- apt-get -y install --allow-unauthenticated --install-recommends winehq-devel wine-mono wine-gecko
+ apt-get -y install --allow-unauthenticated --install-recommends winehq-devel mono-complete wine-gecko
 #Update One More Time
 RUN apt-get update
+RUN apt-get upgrade -y
 #Wine Continues
 RUN \
  cd /usr/bin/ && \
