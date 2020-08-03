@@ -46,7 +46,8 @@ RUN mv /root/prefix32 /root/prefix32_original && \
 WORKDIR /root/
 RUN wget -O zip.zip  https://github.com/novnc/noVNC/archive/v1.2.0.zip
 RUN apt install unzip -y
-RUN unzip zip.zip -d /root/novnc
+RUN unzip zip.zip -d /root
+RUN mv /root/noVBC-1.2.0 /root/novnc
 RUN ln -s /root/novnc/vnc.html /root/novnc/index.html
 # Expose Port
 EXPOSE 8080
