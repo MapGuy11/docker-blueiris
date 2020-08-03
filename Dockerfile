@@ -28,7 +28,7 @@ RUN \
  apt-key add winehq.key && \
  sudo add-apt-repository https://dl.winehq.org/wine-builds/ubuntu/ && \
  apt-get update && \
- apt-get -y install --allow-unauthenticated --install-recommends winehq-stable mono-complete
+ apt-get -y install --allow-unauthenticated --install-recommends winehq-stable
 #Update One More Time
 RUN apt-get update
 RUN apt-get upgrade -y
