@@ -61,6 +61,13 @@ query string. Currently the following options are available:
 * `resize` - How to resize the remote session if it is not the same size as
   the browser window. Can be one of `off`, `scale` and `remote`.
 
+* `quality` - The session JPEG quality level. Can be `0` to `9`.
+
+* `compression` - The session compression level. Can be `0` to `9`.
+
+* `show_dot` - If a dot cursor should be shown when the remote server provides
+  no local cursor, or provides a fully-transparent (invisible) cursor.
+
 * `logging` - The console log level. Can be one of `error`, `warn`, `info` or
   `debug`.
 
@@ -81,3 +88,36 @@ load times. To do this please follow these steps:
 
 This will produce a `build/` directory that includes everything needed to run
 the noVNC application.
+
+## HTTP Serving Considerations
+### Browser Cache Issue
+
+If you serve noVNC files using a web server that provides an ETag header, and
+include any options in the query string, a nasty browser cache issue can bite
+you on upgrade, resulting in a red error box. The issue is caused by a mismatch
+between the new vnc.html (which is reloaded because the user has used it with
+new query string after the upgrade) and the old javascript files (that the
+browser reuses from its cache). To avoid this issue, the browser must be told
+to always revalidate cached files using conditional requests. The correct
+semantics are achieved via the (confusingly named) `Cache-Control: no-cache`
+header that needs to be provided in the web server responses.
+
+### Example Server Configurations
+
+Apache:
+
+```
+    # In the main configuration file
+    # (Debian/Ubuntu users: use "a2enmod headers" instead)
+    LoadModule headers_module modules/mod_headers.so
+
+    # In the <Directory> or <Location> block related to noVNC
+    Header set Cache-Control "no-cache"
+```
+
+Nginx:
+
+```
+    # In the location block related to noVNC
+    add_header Cache-Control no-cache;
+```
