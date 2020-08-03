@@ -47,7 +47,7 @@ WORKDIR /root/
 RUN wget -O zip.zip  https://github.com/novnc/noVNC/archive/v1.2.0.zip
 RUN apt install unzip -y
 RUN unzip zip.zip -d /root/novnc
-
+RUN ln -s /root/novnc/vnc.html /root/novnc/index.html
 # Expose Port
 EXPOSE 8080
 
