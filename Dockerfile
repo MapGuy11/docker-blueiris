@@ -49,8 +49,13 @@ RUN apt install unzip -y
 RUN unzip zip.zip -d /root
 RUN mv /root/noVNC-1.2.0 /root/novnc
 RUN ln -s /root/novnc/vnc.html /root/novnc/index.html
-# Expose Port
+# Add menu entries to the container
+RUN echo "?package(bash):needs=\"X11\" section=\"DockerCustom\" title=\"BlueIris\" command=\"./blueiris.sh\"" >> /usr/share/menu/custom-docker && update-menus
+
+# Expose Ports
 EXPOSE 8080
+EXPOSE 5900
+EXPOSE 81
 
 CMD ["/usr/bin/supervisord"]
 
