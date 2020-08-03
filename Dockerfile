@@ -1,4 +1,4 @@
-FROM phusion/baseimage
+FROM ubuntu:latest
 MAINTAINER jshridha
 
 # Set correct environment variables
@@ -29,7 +29,9 @@ RUN \
  apt-add-repository https://dl.winehq.org/wine-builds/ubuntu/ && \
  apt-get update && \
  apt-get -y install --allow-unauthenticated --install-recommends winehq-devel wine-mono wine-gecko
-
+#Update One More Time
+RUN apt-get update
+#Wine Continues
 RUN \
  cd /usr/bin/ && \
  wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks && \
