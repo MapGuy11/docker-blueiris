@@ -9,7 +9,7 @@ This container runs:
 * x11vnc - A VNC server that scrapes the above X11 server
 * [noNVC](https://github.com/novnc/noVNC) - A HTML5 canvas VNC viewer
 * Fluxbox - A small window manager
-* [WineHQ](https://www.winehq.org) - To run Windows executables on Linux
+* [WineHQ](https://www.winehq.org) - A compatibility layer to run Windows executables on Linux
 * [BlueIris](https://blueirissoftware.com) - Official Windows BlueIris executable
 ```
 docker run -d \
