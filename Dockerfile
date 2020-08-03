@@ -54,7 +54,6 @@ RUN echo "?package(bash):needs=\"X11\" section=\"DockerCustom\" title=\"BlueIris
 
 # Expose Ports
 EXPOSE 8080
-EXPOSE 5900
 EXPOSE 81
 
 CMD ["/usr/bin/supervisord"]
