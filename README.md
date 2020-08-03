@@ -10,7 +10,7 @@ This container runs:
 * [noNVC](https://github.com/novnc/noVNC) - A HTML5 canvas VNC viewer
 * Fluxbox - A small window manager
 * [WineHQ](https://www.winehq.org) - A compatibility layer to run Windows executables on Linux
-* [BlueIris](https://blueirissoftware.com) - Official Windows BlueIris executable
+* [BlueIris](https://blueirissoftware.com) - The Official Windows BlueIris executable
 ```
 docker run -d \
   --name="BlueIris" \
