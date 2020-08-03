@@ -26,30 +26,30 @@ RUN \
  dpkg --add-architecture i386 && \
  wget -nc https://dl.winehq.org/wine-builds/winehq.key && \
  apt-key add winehq.key && \
- sudo add-apt-repository https://dl.winehq.org/wine-builds/ubuntu/ && \
+ add-apt-repository https://dl.winehq.org/wine-builds/ubuntu/ && \
  apt-get update && \
- apt-get -y install --allow-unauthenticated --install-recommends winehq-stable
-#Update One More Time
-RUN apt-get update
-RUN apt-get upgrade -y
-#Wine Continues
+ apt-get -y install --allow-unauthenticated --install-recommends winehq-stable mono-complete
 RUN \
  cd /usr/bin/ && \
  wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks && \
  chmod +x winetricks && \
  sh winetricks corefonts wininet
 
-ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-ADD blueiris.sh /root/blueiris.sh
+ADD https://raw.githubusercontent.com/MapGuy11/docker-blueiris/master/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+ADD https://raw.githubusercontent.com/MapGuy11/docker-blueiris/master/blueiris.sh /root/blueiris.sh
 RUN chmod +x /root/blueiris.sh
 
 RUN mv /root/prefix32 /root/prefix32_original && \
     mkdir /root/prefix32
 
+#Install noVNC
 WORKDIR /root/
-ADD novnc /root/novnc/
+RUN wget -O zip.zip  https://github.com/novnc/noVNC/archive/v1.2.0.zip
+RUN apt install unzip -y
+RUN unzip zip.zip -d /root/novnc
 
 # Expose Port
 EXPOSE 8080
 
 CMD ["/usr/bin/supervisord"]
+
