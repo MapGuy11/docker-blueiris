@@ -58,4 +58,5 @@ EXPOSE 8080
 EXPOSE 81
 
 CMD ["/usr/bin/supervisord"]
-
+#Say It's Done
+RUN echo It Should Be Done By Now You Can Access noVNC or VNC.
