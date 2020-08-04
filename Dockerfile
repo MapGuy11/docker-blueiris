@@ -27,8 +27,8 @@ RUN \
  wget -nc https://dl.winehq.org/wine-builds/winehq.key && \
  apt-key add winehq.key && \
  add-apt-repository https://dl.winehq.org/wine-builds/ubuntu/ && \
- apt-get -y full-upgrade && apt-get clean && \
- apt-get -y install winehq-stable
+ apt -y full-upgrade && apt-get clean && \
+ apt -y install winehq-stable
 RUN \
  cd /usr/bin/ && \
  wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks && \
@@ -50,8 +50,9 @@ RUN unzip zip.zip -d /root
 RUN mv /root/noVNC-1.2.0 /root/novnc
 RUN ln -s /root/novnc/vnc.html /root/novnc/index.html
 # Add menu entries to the container
-RUN echo "?package(bash):needs=\"X11\" section=\"DockerCustom\" title=\"BlueIris\" command=\"./blueiris.sh\"" >> /usr/share/menu/custom-docker && update-menus
-
+RUN echo "?package(bash):needs=\"X11\" section=\"BlueIrisStuff\" title=\"BlueIris\" command=\"./blueiris.sh\"" >> /usr/share/menu/custom-docker && update-menus
+#Final Install
+RUN apt -y install winbind
 # Expose Ports
 EXPOSE 8080
 EXPOSE 81
