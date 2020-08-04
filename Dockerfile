@@ -55,7 +55,6 @@ RUN echo "?package(bash):needs=\"X11\" section=\"BlueIrisStuff\" title=\"BlueIri
 RUN apt -y install winbind
 # Expose Ports
 EXPOSE 8080
-EXPOSE 81
 
 CMD ["/usr/bin/supervisord"]
 #Say It's Done
